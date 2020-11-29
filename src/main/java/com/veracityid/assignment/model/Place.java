@@ -38,6 +38,8 @@ public class Place{
 	
 	private String cityLocationLng;
 	
+	private boolean dirty;
+	
 	@OneToMany(mappedBy = "place", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
 	private Set<PlacePhoto> photos;
@@ -141,6 +143,14 @@ public class Place{
 
 	public void setCityLocationLng(String cityLocationLng) {
 		this.cityLocationLng = cityLocationLng;
+	}
+
+	public Boolean getDirty() {
+		return dirty;
+	}
+
+	public void setDirty(Boolean dirty) {
+		this.dirty = dirty;
 	}
 
 	public void setPhotos(Set<PlacePhoto> photos) {

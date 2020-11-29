@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +22,8 @@ import com.veracityid.assignment.repo.PlaceRepository;
 
 @Service
 public class PlacesService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PlacesService.class);
 	
 	private static final String PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
 			+ "location={location}" + "&radius={radius}" + "&type=restaurant" + "&key={key}";
@@ -44,16 +48,18 @@ public class PlacesService {
 		String radius = "5000";
 		
 		URI uri = new UriTemplate(PLACE_DETAILS_URL).expand(location, radius, key);
-		System.out.println("URI: "+ uri.toString());
-		System.out.println(restTemplateForGoogleApi);
+		LOG.debug("URI: {}", uri.toString());
 		
 		NearbyPlacesResponse response = restTemplateForGoogleApi.getForObject(uri,
 				NearbyPlacesResponse.class);
 		
-		System.out.println("json themis: "+ response);
-		
 		if(response.getResults() != null) {
 			printNeabyResults(response.getResults());
+			
+			// override existing matching data
+			List<Place> existing = placeRepository.findByCityLocationLatAndCityLocationLngAndDirty(latAndLng[0], latAndLng[1], false);
+			LOG.debug("existing dirty places are: {}", existing.size());
+			existing.stream().forEach(place -> placeRepository.updatePlaceDirty(place.getId(), true));
 			
 			// save nearby places found
 			response.getResults().stream().forEach(nearbyPlace-> {
