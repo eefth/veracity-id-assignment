@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head><title>Home Page</title></head>
+<body>
+<h1>Hello !</h1>
+<p>Welcome to <span th:text="${appName}">Our App</span></p>
+<!-- <table> -->
+<!-- 	<tbody> -->
+<!-- 	    <tr th:each="movie: ${movies}"> -->
+<!-- 	        <td th:text="${movie.id}" /> -->
+<!-- 	        <td th:text="${movie.title}" /> -->
+<!-- 	        <td th:text="${movie.user1}" /> -->
+<!-- 	    </tr> -->
+<!-- 	</tbody> -->
+<!-- </table> -->
+
+<!-- <div th:if="${movie ne null}"> -->
+<!-- 	<form action="#" th:action="@{/addMovie}" th:object="${movie}" method="post"> -->
+<!-- 	    <label for="name">Movie Title</label> -->
+<!-- 	    <input type="text" th:field="*{title}" id="title" placeholder="Title"> -->
+<!-- 	    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span> -->
+	    
+<!-- 	    <label for="email">Description</label> -->
+<!-- 	    <input type="text" th:field="*{description}" id="description" placeholder="Description"> -->
+<!-- 	    <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span> -->
+	    
+<!-- 	    <label for="email">User</label> -->
+<!-- 	    <input type="text" th:field="*{user1}" id="user1" placeholder="User1"> -->
+<!-- 	    <span th:if="${#fields.hasErrors('user1')}" th:errors="*{user1}"></span> -->
+	    
+<!-- 	    <input type="submit" value="Add movie">    -->
+<!-- 	</form> -->
+<!-- </div> -->
+<br/>
+<br/>
+
+<form th:action="@{/findPlaces}" method="post" th:object="${selectCity}"> 
+	<label for="name">Find Places in city</label>
+	
+<!-- 	<select th:field="*{city}">  -->
+<!-- 	    <option  th:each="city: ${selectCity.cities}"  -->
+<!-- 	    		 th:value="${city.getValue()}"  -->
+<!-- 	    		 th:text="${city.getKey()}"  -->
+<!-- 	    		 name="city"  -->
+<!-- 	    		 th:selected ="${formObject.text} == ${city.value}">  -->
+<!-- 	    </option>  -->
+<!--  	</select>  -->
+	
+	<select name="city"> 
+	    <option  th:each="city: ${selectCity.cities}" 
+	    		 th:value="${city.getValue()}" 
+	    		 th:text="${city.getKey()}" 
+	    		 name="city" 
+	    		 th:selected ="${formObject.text} == ${city.value}"> 
+	    </option> 
+ 	</select> 
+	
+	<input type="submit" value="Find Places">
+</form> 
+
+<div th:if="${nearbyPlaces ne null}">
+	<p th:text="${formObject.text}?:''"></p>
+	<table>
+		<tbody>
+		    <tr th:each="place: ${nearbyPlaces}">
+		        <td th:text="${place.name}" />
+		        <td th:text="${place.icon}" />
+		        <td th:text="${place.priceLevel}" />
+		        <td th:text="${place.rating}" />
+		        <td th:text="${place.vicinity}" />
+		        <td th:text="${place.types}" />
+		    </tr>
+		</tbody>
+	</table>
+</div>
+
+</body>
+</html>
