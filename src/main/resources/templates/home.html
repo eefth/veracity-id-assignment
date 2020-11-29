@@ -69,6 +69,12 @@
 		        <td th:text="${place.rating}" />
 		        <td th:text="${place.vicinity}" />
 		        <td th:text="${place.types}" />
+		        <td>
+		        	<a th:href="@{'/viewPlaceDetails/' + ${place.placeId}}">Edit</a>
+		        </td>
+		        <td>
+		        	<a th:href="@{'/deletePlace/' + ${place.id}}">Delete</a>
+		        </td>
 		    </tr>
 		</tbody>
 	</table>

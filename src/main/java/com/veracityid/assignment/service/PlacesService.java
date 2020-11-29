@@ -1,7 +1,9 @@
 package com.veracityid.assignment.service;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import com.veracityid.assignment.exception.PlaceNotFoundException;
 import com.veracityid.assignment.json.output.NearbyPlace;
-import com.veracityid.assignment.json.output.NearbyPlacePhoto;
 import com.veracityid.assignment.json.output.NearbyPlacesResponse;
 import com.veracityid.assignment.model.Place;
 import com.veracityid.assignment.model.PlacePhoto;
@@ -25,9 +27,16 @@ public class PlacesService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PlacesService.class);
 	
-	private static final String PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+	private static final String FIND_NEARBY_PLACES_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
 			+ "location={location}" + "&radius={radius}" + "&type=restaurant" + "&key={key}";
-
+	
+	private static final String PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?"
+			+ "place_id={placeId}&fields=name,rating,formatted_phone_number,icon,types,website,formatted_address,photo&key={key}";
+	
+	private static final String GOOGLE_API_KEY = "AIzaSyAyLAox0bzweP_9opnCd2gQx--wCqO6v7U";
+	
+	private static final String NEARBY_SEARVH_RADIUS = "5000";
+	
 	private final RestTemplate restTemplateForGoogleApi;
 	private final PlaceRepository placeRepository; 
 	private final PlacePhotoRepository placePhotoRepository; 
@@ -39,15 +48,13 @@ public class PlacesService {
 	}
 	
 	@Transactional
-	public List<NearbyPlace> getAndSaveNearbyPlaces(String location) {
+	public List<Place> getAndSaveNearbyPlaces(String location) {
 		
-		System.out.println("in getPlacesByName");
+		System.out.println("in getAndSaveNearbyPlaces");
 		
 		String[] latAndLng = location.split(",");
-		String key = "AIzaSyAyLAox0bzweP_9opnCd2gQx--wCqO6v7U";
-		String radius = "5000";
 		
-		URI uri = new UriTemplate(PLACE_DETAILS_URL).expand(location, radius, key);
+		URI uri = new UriTemplate(FIND_NEARBY_PLACES_URL).expand(location, NEARBY_SEARVH_RADIUS, GOOGLE_API_KEY);
 		LOG.debug("URI: {}", uri.toString());
 		
 		NearbyPlacesResponse response = restTemplateForGoogleApi.getForObject(uri,
@@ -62,29 +69,68 @@ public class PlacesService {
 			existing.stream().forEach(place -> placeRepository.updatePlaceDirty(place.getId(), true));
 			
 			// save nearby places found
-			response.getResults().stream().forEach(nearbyPlace-> {
+			List<Place> savedPlaces = response.getResults().stream().map(nearbyPlace-> {
 				
 				Place place = new Place(nearbyPlace.getPlaceId(), nearbyPlace.getIcon(), nearbyPlace.getName(),
 						nearbyPlace.getPriceLevel(), nearbyPlace.getRating(), nearbyPlace.getVicinity(),
 						nearbyPlace.getTypes().stream().collect(Collectors.joining(", ")), latAndLng[0], latAndLng[1]);
 
+				Place savedPlace = placeRepository.save(place);
+				
 				Set<PlacePhoto> placePhotos = nearbyPlace.getPhotos().stream()
 						.map(nearbyPlacePhoto -> {
-							return new PlacePhoto(nearbyPlacePhoto.getPhotoReference(), nearbyPlacePhoto.getHeight(), nearbyPlacePhoto.getWidth(), place);
+							return new PlacePhoto(nearbyPlacePhoto.getPhotoReference(), nearbyPlacePhoto.getHeight(), nearbyPlacePhoto.getWidth(), savedPlace);
 						}).collect(Collectors.toSet());
-				
-				placeRepository.save(place);
 				
 				// save photos
 				placePhotos.stream().forEach(placePhoto -> placePhotoRepository.save(placePhoto));
 				
-			});
+				return savedPlace;
+				
+			}).collect(Collectors.toList());
 			
-			return response.getResults();
+			return savedPlaces;
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 
+	}
+	
+	public void getPlaceDetails(String placeId) {
+		
+		System.out.println("in getPlaceDetails");
+		
+		URI uri = new UriTemplate(PLACE_DETAILS_URL).expand(placeId, GOOGLE_API_KEY);
+		LOG.debug("URI: {}", uri.toString());
+		
+		String response = restTemplateForGoogleApi.getForObject(uri,
+				String.class);
+		System.out.println(response);
+	
+	}
+	
+	public void deletePlace(String id) {
+		
+		System.out.println("in deletePlace");
+		
+		Optional<Place> optionalPlace = placeRepository.findById(Long.valueOf(id));
+				
+		// delete the photos of the place from the local storage
+		if(optionalPlace.isPresent()) {
+			
+			List<PlacePhoto> placePhotos = placePhotoRepository.findByPlace(optionalPlace.get());
+			placePhotos.stream().forEach(photo -> placePhotoRepository.deleteById(photo.getId()));
+			
+			System.out.println("place photos deleted");
+			
+		} else {
+			throw new PlaceNotFoundException("Place not found in local storage");
+		}
+		
+		// delete the place from the local storage
+		placeRepository.deleteById(Long.valueOf(id));
+		
+		System.out.println("place deleted");
 	}
 	
 	private void printNeabyResults(List<NearbyPlace> nearbySearchResults) {

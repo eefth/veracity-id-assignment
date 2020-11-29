@@ -1,7 +1,6 @@
 package com.veracityid.assignment.controllers;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,38 +10,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.veracityid.assignment.model.FormObject;
-import com.veracityid.assignment.model.Movie;
 import com.veracityid.assignment.model.SelectCity;
-import com.veracityid.assignment.repo.MovieRepository;
 
 @Controller
 public class SimpleController {
     
 	@Value("${spring.application.name}")
     String appName;
-    
-	private MovieRepository movieRepository;
 	
-    public SimpleController(MovieRepository movieRepository) {
-    	this.movieRepository = movieRepository;
+    public SimpleController() {
     }
     
     @GetMapping("/")
     public String homePage(Model model) {
         // will be deleted
     	model.addAttribute("appName", appName);
-        model.addAttribute("movies", findAllMovvies());
-        model.addAttribute("movie", new Movie());
         model.addAttribute("formObject", new FormObject());
         // create cities 
         model.addAttribute("selectCity", new SelectCity(generateCities()));
         
         return "home";
-    }
-    
-    private List<Movie> findAllMovvies(){
-    	return (List<Movie>) movieRepository.findAll();
-    	
     }
     
     @Controller

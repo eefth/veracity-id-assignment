@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
  
-    @ExceptionHandler({ MovieNotFoundException.class })
+    @ExceptionHandler({ PlaceNotFoundException.class })
     protected ResponseEntity<Object> handleNotFound(
       Exception ex, WebRequest request) {
         return handleExceptionInternal(ex, "Book not found", 
