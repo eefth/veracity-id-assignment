@@ -1,5 +1,6 @@
 package com.veracityid.assignment.model;
 
+import java.net.URL;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -38,6 +39,14 @@ public class Place{
 	private String cityLocationLng;
 	
 	private boolean dirty;
+	
+	private String formattedAddress;
+	
+	private String formattedPhoneNumber;
+	
+	private String internationalPhoneNumber;
+	
+	private String website;
 	
 	@OneToMany(mappedBy = "place", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
@@ -150,6 +159,38 @@ public class Place{
 
 	public void setDirty(Boolean dirty) {
 		this.dirty = dirty;
+	}
+
+	public String getFormattedAddress() {
+		return formattedAddress;
+	}
+
+	public String getFormattedPhoneNumber() {
+		return formattedPhoneNumber;
+	}
+
+	public String getInternationalPhoneNumber() {
+		return internationalPhoneNumber;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setFormattedAddress(String formattedAddress) {
+		this.formattedAddress = formattedAddress;
+	}
+
+	public void setFormattedPhoneNumber(String formattedPhoneNumber) {
+		this.formattedPhoneNumber = formattedPhoneNumber;
+	}
+
+	public void setInternationalPhoneNumber(String internationalPhoneNumber) {
+		this.internationalPhoneNumber = internationalPhoneNumber;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
 	}
 
 	public void setPhotos(Set<PlacePhoto> photos) {

@@ -17,6 +17,8 @@ import org.springframework.web.util.UriTemplate;
 import com.veracityid.assignment.exception.PlaceNotFoundException;
 import com.veracityid.assignment.json.output.NearbyPlace;
 import com.veracityid.assignment.json.output.NearbyPlacesResponse;
+import com.veracityid.assignment.json.output.PlaceDetails;
+import com.veracityid.assignment.json.output.PlaceDetailsResponse;
 import com.veracityid.assignment.model.Place;
 import com.veracityid.assignment.model.PlacePhoto;
 import com.veracityid.assignment.repo.PlacePhotoRepository;
@@ -96,17 +98,17 @@ public class PlacesService {
 
 	}
 	
-	public void getPlaceDetails(String placeId) {
+	public PlaceDetails getPlaceDetails(String placeId) {
 		
 		System.out.println("in getPlaceDetails");
 		
 		URI uri = new UriTemplate(PLACE_DETAILS_URL).expand(placeId, GOOGLE_API_KEY);
-		LOG.debug("URI: {}", uri.toString());
+		System.out.println("URI:" + uri.toString());
 		
-		String response = restTemplateForGoogleApi.getForObject(uri,
-				String.class);
-		System.out.println(response);
-	
+		PlaceDetailsResponse response = restTemplateForGoogleApi.getForObject(uri, PlaceDetailsResponse.class);
+		System.out.println(response.getResult());
+		
+		return response.getResult();
 	}
 	
 	public void deletePlace(String id) {

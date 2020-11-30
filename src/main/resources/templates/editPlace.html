@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head><title>Update Place</title></head>
+<body>
+
+<p>Place Details</p>
+	 
+<form th:action="@{/updatePlace}" method="post" th:object="${placeDetails}">
+   <table>
+    	<tbody>
+			<tr>
+				<td>
+			    	<label for="name">Name</label>
+			    </td>
+			    <td colspan="2">
+				    <input type="text" th:field="*{name}" id="name" placeholder="name" th:value="${placeDetails.name}"/>
+<!-- 				    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span> -->
+			    </td>
+			</tr>    
+		    
+		    <tr>
+				<td>
+		    		<label for="formattedAddress">Formatted Address</label>
+		     	</td>
+			    <td colspan="2">
+		    		<input type="text" th:field="*{formattedAddress}" id="formattedAddress" placeholder="formattedAddress" th:value="${placeDetails.formattedAddress}"/>
+<!-- 					<span th:if="${#fields.hasErrors('formattedAddress')}" th:errors="formattedAddress"></span> -->
+				</td>
+			</tr>	
+			
+			<tr>
+				<td>
+		    		<label for="formattedPhoneNumber">Formatted Phone number</label>
+		    	</td>
+			    <td colspan="2">	
+		    		<input type="text" th:field="*{formattedPhoneNumber}" id="formattedPhoneNumber" placeholder="formattedPhoneNumber" th:value="${placeDetails.formattedPhoneNumber}"/>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>	
+					<label for="internationalPhoneNumber">International Phone Number</label>
+				</td>
+				<td colspan="2">
+					<input type="text" th:field="*{internationalPhoneNumber}" id="internationalPhoneNumber" placeholder="internationalPhoneNumber" th:value="${placeDetails.internationalPhoneNumber}"/>
+				</td>
+			</tr>	
+			
+			<tr>
+				<td>
+					<label for="types">Types</label>
+				</td>
+				<td colspan="2">
+					<input type="text" th:field="*{types}" id="types" placeholder="types" th:value="${placeDetails.types}"/>
+				</td>
+			</tr>			  
+		      
+		    <tr>
+				<td>  
+					<label for="vicinity">Vicinity</label>
+				</td>
+				<td colspan="2">
+					<input type="text" th:field="*{vicinity}" id="vicinity" placeholder="vicinity" th:value="${placeDetails.vicinity}"/>
+				</td>
+			</tr>	
+		    
+		    <tr>
+				<td>
+					<label for="website">Website</label> 
+				</td>
+				<td colspan="2">
+					<input type="text" th:field="*{website}" id="website" placeholder="website" th:value="${placeDetails.website}"/>
+				</td>
+			</tr>
+		    
+		    <tr>
+				<td>
+					<label for="url">Url</label>
+				</td>
+				<td colspan="2">
+					<input type="text" th:field="*{url}" id="url" placeholder="url" th:value="${placeDetails.url}"/>
+				</td>
+			</tr>	
+		
+		 	<tr>
+				<td>     
+					<label for="rating">Rating</label>
+				</td>
+				<td colspan="2">	
+					<input type="text" th:field="*{rating}" id="rating" placeholder="rating" th:value="${placeDetails.rating}"/>
+				</td>
+			</tr>	
+		
+			<tr>
+				<td colspan="3">	    
+					<input type="submit" value="Update Place">
+				</td>
+			</tr>		
+	   </tbody>
+    </table>	
+</form> 
+
+
+<div th:if="${placeDetails.photos ne null}">
+	<table>
+		<tbody>
+		    <tr th:each="photo: ${placeDetails.photos}">
+				<td>
+					<img th:src="@{https://maps.googleapis.com/maps/api/place/photo?maxheight=400&maxwidth=500&key=AIzaSyAyLAox0bzweP_9opnCd2gQx--wCqO6v7U&photoreference=}+${photo.photoReference}"/>
+		    	</td>
+		    </tr>
+	    </tbody>
+	</table>
+</div>
+
+</body>
+</html>

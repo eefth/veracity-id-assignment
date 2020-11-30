@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.veracityid.assignment.json.output.PlaceDetails;
 import com.veracityid.assignment.model.FormObject;
 import com.veracityid.assignment.model.SelectCity;
 import com.veracityid.assignment.service.PlacesService;
@@ -40,11 +41,11 @@ public class PlaceController {
     }	
     
     @GetMapping("/viewPlaceDetails//{id}")
-    public String editPlace(@PathVariable String id) {
+    public String editPlace(@PathVariable String id, Model model) {
     	
     	System.out.println("in editPlace - placeId: "+ id);
     	
-    	placesService.getPlaceDetails(id);
+    	model.addAttribute("placeDetails", placesService.getPlaceDetails(id)); 
     	
     	return "editPlace";
     }
@@ -57,6 +58,14 @@ public class PlaceController {
     	placesService.deletePlace(id);
     	
     	return new ModelAndView("redirect:/");
+    }
+    
+    @PostMapping("/updatePlace")
+    public String updatePlace(@ModelAttribute PlaceDetails placeDetails, Model model) {
+    	
+    	
+    	
+    	return "home";
     }
     
     // helper methods
