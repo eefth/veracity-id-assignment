@@ -35,7 +35,7 @@
 		        <td th:text="${place.vicinity}" />
 		        <td th:text="${place.types}" />
 		        <td>
-		        	<a th:href="@{'/viewPlaceDetails/' + ${place.placeId}}">Edit</a>
+		        	<a th:href="@{'/viewPlaceDetails/' + ${place.id}}">Edit</a>
 		        </td>
 		        <td>
 		        	<a th:href="@{'/deletePlace/' + ${place.id}}">Delete</a>

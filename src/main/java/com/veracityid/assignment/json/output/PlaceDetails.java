@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaceDetails {
 	
-	private long id;
+	private String id;
 	
 	@JsonProperty("formatted_address")
 	private String formattedAddress;
@@ -49,11 +49,11 @@ public class PlaceDetails {
 	@JsonProperty("photos")
 	private List<NearbyPlacePhoto> photos = Collections.emptyList();
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -155,7 +155,7 @@ public class PlaceDetails {
 
 	@Override
 	public String toString() {
-		return "PlaceDetails [formattedAddress=" + formattedAddress + ", name=" + name +", formattedPhoneNumber=" + formattedPhoneNumber
+		return "PlaceDetails [id=" + id +", formattedAddress=" + formattedAddress + ", name=" + name +", formattedPhoneNumber=" + formattedPhoneNumber
 				+ ", htmlAttributions=" + Arrays.toString(htmlAttributions) + ", internationalPhoneNumber="
 				+ internationalPhoneNumber + ", placeId=" + placeId + ", vicinity=" + vicinity + ", website=" + website
 				+ ", url=" + url + ", types=" + types + ", rating=" + rating + ", photos=" + photos + "]";

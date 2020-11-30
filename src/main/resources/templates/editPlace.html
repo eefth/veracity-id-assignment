@@ -6,6 +6,7 @@
 <p>Place Details</p>
 	 
 <form th:action="@{/updatePlace}" method="post" th:object="${placeDetails}">
+   <input type="hidden" th:field="*{id}" th:value="${placeDetails.id}"/>
    <table>
     	<tbody>
 			<tr>

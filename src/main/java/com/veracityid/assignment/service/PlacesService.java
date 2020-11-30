@@ -98,17 +98,25 @@ public class PlacesService {
 
 	}
 	
-	public PlaceDetails getPlaceDetails(String placeId) {
+	public PlaceDetails getPlaceDetails(String id) {
 		
 		System.out.println("in getPlaceDetails");
 		
-		URI uri = new UriTemplate(PLACE_DETAILS_URL).expand(placeId, GOOGLE_API_KEY);
-		System.out.println("URI:" + uri.toString());
+		Optional<Place> storedPlaceOptional = placeRepository.findById(Long.valueOf(id));
 		
-		PlaceDetailsResponse response = restTemplateForGoogleApi.getForObject(uri, PlaceDetailsResponse.class);
-		System.out.println(response.getResult());
+		if(storedPlaceOptional.isPresent()) {
 		
-		return response.getResult();
+			URI uri = new UriTemplate(PLACE_DETAILS_URL).expand(storedPlaceOptional.get().getPlaceId(), GOOGLE_API_KEY);
+			System.out.println("URI:" + uri.toString());
+
+			PlaceDetailsResponse response = restTemplateForGoogleApi.getForObject(uri, PlaceDetailsResponse.class);
+			System.out.println(response.getResult());
+			return response.getResult();
+		
+		} else {
+			throw new PlaceNotFoundException("Place wasn't found in local storage");
+		}	
+		
 	}
 	
 	public void deletePlace(String id) {
@@ -133,6 +141,14 @@ public class PlacesService {
 		placeRepository.deleteById(Long.valueOf(id));
 		
 		System.out.println("place deleted");
+	}
+	
+	@Transactional
+	public void updatePlace(Place place) {
+		
+		placeRepository.updatePlace(place.getId(), place.getFormattedAddress(), place.getFormattedPhoneNumber(),
+				place.getInternationalPhoneNumber(), place.getWebsite());
+
 	}
 	
 	private void printNeabyResults(List<NearbyPlace> nearbySearchResults) {

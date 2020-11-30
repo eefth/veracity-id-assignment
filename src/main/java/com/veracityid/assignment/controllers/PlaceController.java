@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.veracityid.assignment.json.output.PlaceDetails;
 import com.veracityid.assignment.model.FormObject;
+import com.veracityid.assignment.model.Place;
 import com.veracityid.assignment.model.SelectCity;
 import com.veracityid.assignment.service.PlacesService;
 
@@ -40,12 +41,15 @@ public class PlaceController {
     	return "home";
     }	
     
-    @GetMapping("/viewPlaceDetails//{id}")
+    @GetMapping("/viewPlaceDetails/{id}")
     public String editPlace(@PathVariable String id, Model model) {
     	
     	System.out.println("in editPlace - placeId: "+ id);
     	
-    	model.addAttribute("placeDetails", placesService.getPlaceDetails(id)); 
+    	PlaceDetails placeDetails = placesService.getPlaceDetails(id);
+    	placeDetails.setId(id);
+    	
+    	model.addAttribute("placeDetails", placeDetails); 
     	
     	return "editPlace";
     }
@@ -61,11 +65,22 @@ public class PlaceController {
     }
     
     @PostMapping("/updatePlace")
-    public String updatePlace(@ModelAttribute PlaceDetails placeDetails, Model model) {
+    public ModelAndView updatePlace(@ModelAttribute PlaceDetails placeDetails, Model model) {
     	
+    	System.out.println("in updatePlace");
     	
+    	System.out.println("got placeDetails: "+ placeDetails.toString());
     	
-    	return "home";
+    	Place place = new Place();
+    	place.setId(Long.valueOf(placeDetails.getId()));
+    	place.setFormattedAddress(placeDetails.getFormattedAddress());
+    	place.setFormattedPhoneNumber(placeDetails.getFormattedPhoneNumber());
+    	place.setInternationalPhoneNumber(placeDetails.getInternationalPhoneNumber());
+    	place.setWebsite(placeDetails.getWebsite().toString());
+    	
+    	placesService.updatePlace(place);
+    	
+    	return new ModelAndView("redirect:/");
     }
     
     // helper methods
