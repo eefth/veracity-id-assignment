@@ -31,5 +31,13 @@ public interface PlaceRepository extends CrudRepository<Place, Long>{
     void updatePlace(@Param(value = "id") long id, @Param(value = "formattedAddress") String formattedAddress, 
     		@Param(value = "formattedPhoneNumber") String formattedPhoneNumber, 
     		@Param(value = "internationalPhoneNumber") String internationalPhoneNumber, @Param(value = "website") String website);
+	
+	@Query("select pl from Place pl where pl.cityLocationLat = :cityLocationLat and pl.cityLocationLng = :cityLocationLng and pl.priceLevel <= :priceLevel and pl.rating >= :rating and pl.dirty is false")
+	List<Place> findByCityLocationLatAndCityLocationLngAndPriceLevelAndRating(@Param("cityLocationLat") String cityLocationLat,
+			@Param("cityLocationLng") String cityLocationLng, @Param("priceLevel") Integer priceLevel,
+			@Param("rating") Double rating);
+	
+	
+	
 
 }

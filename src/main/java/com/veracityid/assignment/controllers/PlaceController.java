@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.veracityid.assignment.json.output.PlaceDetails;
@@ -81,6 +82,17 @@ public class PlaceController {
     	placesService.updatePlace(place);
     	
     	return new ModelAndView("redirect:/");
+    }
+    
+    //http://localhost:8081/findPlacesByLocationAndRatingAndPriceLevel?location=37.9838096,23.7275388&priceLevel=5&rating=2
+    @GetMapping("/findPlacesByLocationAndRatingAndPriceLevel")
+    public String findPlacesByRatingAndPriceLevel(@RequestParam String location, String rating, String priceLevel, Model model) {
+    	
+		System.out.println("in findPlacesByRatingAndPriceLevel location: "+ location + ", rating: " + rating + ", priceLevel: "+ priceLevel);
+    	
+    	model.addAttribute("places", placesService.findPlacesByLocationAndByRatingAndPriceLevel(location, Double.valueOf(rating), Integer.valueOf(priceLevel)));
+    	
+    	return "searchResults";
     }
     
     // helper methods

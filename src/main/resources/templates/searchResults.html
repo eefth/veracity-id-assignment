@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><title>Home Page</title></head>
+<body>
+<h1>Search Results</h1>
+
+<br/>
+
+<div th:if="${places ne null}">
+	<table>
+		<tbody>
+		    <tr th:each="place: ${places}">
+		        <td th:text="${place.name}" />
+		        <td th:text="${place.icon}" />
+		        <td th:text="${place.priceLevel}" />
+		        <td th:text="${place.rating}" />
+		        <td th:text="${place.vicinity}" />
+		        <td th:text="${place.types}" />
+		        <td>
+		        	<a th:href="@{'/viewPlaceDetails/' + ${place.id}}">Edit</a>
+		        </td>
+		        <td>
+		        	<a th:href="@{'/deletePlace/' + ${place.id}}">Delete</a>
+		        </td>
+		    </tr>
+		</tbody>
+	</table>
+</div>
+
+</body>
+</html>

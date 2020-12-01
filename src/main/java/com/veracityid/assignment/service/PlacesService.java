@@ -151,6 +151,11 @@ public class PlacesService {
 
 	}
 	
+	public List<Place> findPlacesByLocationAndByRatingAndPriceLevel(String location, Double rating, Integer priceLevel){
+		return placeRepository.findByCityLocationLatAndCityLocationLngAndPriceLevelAndRating(
+				location.split(",")[0], location.split(",")[1], priceLevel, rating);
+	}
+	
 	private void printNeabyResults(List<NearbyPlace> nearbySearchResults) {
 		
 		nearbySearchResults.stream().forEach(System.out::println);
