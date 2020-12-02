@@ -1,6 +1,7 @@
 package com.veracityid.assignment.service;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -76,7 +78,8 @@ public class PlacesService {
 				Place place = new Place(nearbyPlace.getPlaceId(), nearbyPlace.getIcon(), nearbyPlace.getName(),
 						nearbyPlace.getPriceLevel(), nearbyPlace.getRating(), nearbyPlace.getVicinity(),
 						nearbyPlace.getTypes().stream().collect(Collectors.joining(", ")), latAndLng[0], latAndLng[1]);
-
+				
+			    place.setTypes2(nearbyPlace.getTypes());
 				Place savedPlace = placeRepository.save(place);
 				
 				Set<PlacePhoto> placePhotos = nearbyPlace.getPhotos().stream()
@@ -145,15 +148,26 @@ public class PlacesService {
 	
 	@Transactional
 	public void updatePlace(Place place) {
-		
+
 		placeRepository.updatePlace(place.getId(), place.getFormattedAddress(), place.getFormattedPhoneNumber(),
 				place.getInternationalPhoneNumber(), place.getWebsite());
 
 	}
+
+	public List<Place> findPlacesByLocationAndByRatingAndPriceLevel(String location, Double rating,
+			Integer priceLevel) {
+		return placeRepository.findByCityLocationLatAndCityLocationLngAndPriceLevelAndRating(location.split(",")[0],
+				location.split(",")[1], priceLevel, rating);
+	}
 	
-	public List<Place> findPlacesByLocationAndByRatingAndPriceLevel(String location, Double rating, Integer priceLevel){
-		return placeRepository.findByCityLocationLatAndCityLocationLngAndPriceLevelAndRating(
-				location.split(",")[0], location.split(",")[1], priceLevel, rating);
+	public List<Place> findPlacesByLocationAndByRatingOrderedByRatingAndPriceLevel(String location) {
+		return placeRepository.findByCityLocationLatAndCityLocationLngOrderedByRatingAndPriceLevel(
+				location.split(",")[0], location.split(",")[1],
+				Sort.by("rating").descending().and(Sort.by("priceLevel").ascending()));
+	}
+	
+	public List<Place> findPlacesByLocationAndType(String location, String type) {
+		return placeRepository.findByCityLocationLatAndCityLocationLngAndType(location.split(",")[0], location.split(",")[1], type);
 	}
 	
 	private void printNeabyResults(List<NearbyPlace> nearbySearchResults) {

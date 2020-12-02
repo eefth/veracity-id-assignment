@@ -1,9 +1,10 @@
 package com.veracityid.assignment.model;
 
-import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -47,6 +48,9 @@ public class Place{
 	private String internationalPhoneNumber;
 	
 	private String website;
+	
+	@ElementCollection
+	private List<String> types2;
 	
 	@OneToMany(mappedBy = "place", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
@@ -195,6 +199,14 @@ public class Place{
 
 	public void setPhotos(Set<PlacePhoto> photos) {
 		this.photos = photos;
+	}
+
+	public List<String> getTypes2() {
+		return types2;
+	}
+
+	public void setTypes2(List<String>  types2) {
+		this.types2 = types2;
 	}
 	
 }

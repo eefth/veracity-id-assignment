@@ -3,6 +3,7 @@ package com.veracityid.assignment.repo;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -38,6 +39,13 @@ public interface PlaceRepository extends CrudRepository<Place, Long>{
 			@Param("rating") Double rating);
 	
 	
+	@Query("select pl from Place pl where pl.cityLocationLat = :cityLocationLat and pl.cityLocationLng = :cityLocationLng")
+	List<Place> findByCityLocationLatAndCityLocationLngOrderedByRatingAndPriceLevel(@Param("cityLocationLat") String cityLocationLat,
+			@Param("cityLocationLng") String cityLocationLng, Sort sort);
+	
+	@Query("select pl from Place pl JOIN pl.types2 t where t = :type and pl.cityLocationLat = :cityLocationLat and pl.cityLocationLng = :cityLocationLng ")
+	List<Place> findByCityLocationLatAndCityLocationLngAndType(@Param("cityLocationLat") String cityLocationLat,
+			@Param("cityLocationLng") String cityLocationLng, @Param("type") String type);
 	
 
 }

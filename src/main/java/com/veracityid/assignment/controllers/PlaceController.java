@@ -86,11 +86,33 @@ public class PlaceController {
     
     //http://localhost:8081/findPlacesByLocationAndRatingAndPriceLevel?location=37.9838096,23.7275388&priceLevel=5&rating=2
     @GetMapping("/findPlacesByLocationAndRatingAndPriceLevel")
-    public String findPlacesByRatingAndPriceLevel(@RequestParam String location, String rating, String priceLevel, Model model) {
+    public String findPlacesByLocationAndRatingAndPriceLevel(@RequestParam String location, String rating, String priceLevel, Model model) {
     	
-		System.out.println("in findPlacesByRatingAndPriceLevel location: "+ location + ", rating: " + rating + ", priceLevel: "+ priceLevel);
+		System.out.println("in findPlacesByLocationAndRatingAndPriceLevel location: "+ location + ", rating: " + rating + ", priceLevel: "+ priceLevel);
     	
     	model.addAttribute("places", placesService.findPlacesByLocationAndByRatingAndPriceLevel(location, Double.valueOf(rating), Integer.valueOf(priceLevel)));
+    	
+    	return "searchResults";
+    }
+    
+    //http://localhost:8081/findPlacesByLocationOrderedByRatingAndPriceLevel?location=37.9838096,23.7275388
+    @GetMapping("/findPlacesByLocationOrderedByRatingAndPriceLevel")
+    public String findPlacesByLocationOrderedByRatingAndPriceLevel(@RequestParam String location, Model model) {
+    	
+		System.out.println("in findPlacesByLocationOrderedByRatingAndPriceLevel location: "+ location);
+    	
+    	model.addAttribute("places", placesService.findPlacesByLocationAndByRatingOrderedByRatingAndPriceLevel(location));
+    	
+    	return "searchResults";
+    }
+    
+    //http://localhost:8081/findPlacesByLocationAndType?location=37.9838096,23.7275388&type=restaurant
+    @GetMapping("/findPlacesByLocationAndType")
+    public String findPlacesByLocationAndType(@RequestParam String location, @RequestParam String type, Model model) {
+    	
+		System.out.println("in findPlacesByLocationAndType location: "+ location + ", type: " + type);
+    	
+    	model.addAttribute("places", placesService.findPlacesByLocationAndType(location, type));
     	
     	return "searchResults";
     }
